@@ -1,0 +1,12 @@
+{
+  "name": "teacher-planner",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://zan-montieth.github.io/TeacherPlanner",
+  "scripts": {
+    "build": "echo 'Build artifacts already exist'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
