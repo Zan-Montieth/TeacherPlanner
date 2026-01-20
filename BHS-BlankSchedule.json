@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "semesterStart": "2026-01-26T07:00:00.000Z",
+  "semesterEnd": "2026-06-12T06:00:00.000Z",
+  "instructionalDays": [
+    {
+      "id": "red",
+      "label": "Red Day",
+      "color": "#fca5a5",
+      "textColor": "#991b1b"
+    },
+    {
+      "id": "black",
+      "label": "Black Day",
+      "color": "#1f2937",
+      "textColor": "#ffffff"
+    }
+  ],
+  "nonInstructionalDays": [
+    {
+      "id": "holiday",
+      "label": "Holiday",
+      "color": "#fef3c7",
+      "textColor": "#92400e"
+    },
+    {
+      "id": "teacher-day",
+      "label": "Teacher Day",
+      "color": "#ddd6fe",
+      "textColor": "#5b21b6"
+    },
+    {
+      "id": "finals",
+      "label": "Finals",
+      "color": "#fed7aa",
+      "textColor": "#9a3412"
+    }
+  ],
+  "breakDays": {
+    "2026-06-09": "finals",
+    "2026-06-10": "finals",
+    "2026-06-11": "finals",
+    "2026-06-12": "teacher-day",
+    "2026-05-25": "holiday",
+    "2026-05-22": "teacher-day",
+    "2026-04-10": "teacher-day",
+    "2026-03-17": "holiday",
+    "2026-03-16": "holiday",
+    "2026-03-18": "holiday",
+    "2026-03-19": "holiday",
+    "2026-03-20": "holiday",
+    "2026-02-16": "holiday",
+    "2026-01-26": "teacher-day"
+  },
+  "units": [],
+  "classes": [
+    "Algebra",
+    "Geometry"
+  ]
+}

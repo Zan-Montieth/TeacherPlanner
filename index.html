@@ -67,6 +67,8 @@
             const saved = localStorage.getItem('teacherPlanner_darkMode');
             return saved ? JSON.parse(saved) : false;
           });
+          const [showCanvasExport, setShowCanvasExport] = useState(null);
+          const [showImportModal, setShowImportModal] = useState(false);
 
           const [instructionalDays, setInstructionalDays] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_instructionalDays');
@@ -360,6 +362,35 @@
             a.click();
           };
 
+          const loadScheduleData = (data) => {
+            try {
+              if (data.semesterStart) setSemesterStart(new Date(data.semesterStart));
+              if (data.semesterEnd) setSemesterEnd(new Date(data.semesterEnd));
+              if (data.instructionalDays) setInstructionalDays(data.instructionalDays);
+              if (data.nonInstructionalDays) setNonInstructionalDays(data.nonInstructionalDays);
+              if (data.breakDays) setBreakDays(data.breakDays);
+              if (data.units) setUnits(data.units);
+              if (data.classes) {
+                setClasses(data.classes);
+                setVisibleClasses(new Set(data.classes));
+              }
+              setShowImportModal(false);
+              alert('Schedule loaded successfully!');
+            } catch (error) {
+              alert('Error loading schedule. Please check the file format.');
+            }
+          };
+
+          const loadBHSTemplate = async () => {
+            try {
+              const response = await fetch('./BHS-BlankSchedule.json');
+              const data = await response.json();
+              loadScheduleData(data);
+            } catch (error) {
+              alert('Error loading BHS template. Please make sure BHS-BlankSchedule.json is in the project folder.');
+            }
+          };
+
           const importSchedule = (event) => {
             const file = event.target.files[0];
             if (!file) return;
@@ -367,17 +398,7 @@
             reader.onload = (e) => {
               try {
                 const data = JSON.parse(e.target.result);
-                if (data.semesterStart) setSemesterStart(new Date(data.semesterStart));
-                if (data.semesterEnd) setSemesterEnd(new Date(data.semesterEnd));
-                if (data.instructionalDays) setInstructionalDays(data.instructionalDays);
-                if (data.nonInstructionalDays) setNonInstructionalDays(data.nonInstructionalDays);
-                if (data.breakDays) setBreakDays(data.breakDays);
-                if (data.units) setUnits(data.units);
-                if (data.classes) {
-                  setClasses(data.classes);
-                  setVisibleClasses(new Set(data.classes));
-                }
-                alert('Schedule imported successfully!');
+                loadScheduleData(data);
               } catch (error) {
                 alert('Error importing schedule. Please check the file format.');
               }
@@ -421,6 +442,139 @@
             setUnits(prev => prev.map(u => u.class === className ? { ...u, class: '' } : u));
           };
 
+          const generateCanvasHTML = (className) => {
+            if (!semesterStart || !semesterEnd) return '<p>Please set semester dates first.</p>';
+
+            const classUnits = className ? units.filter(u => u.class === className) : units.filter(u => !u.class);
+
+            // Get all months in the semester range
+            const months = [];
+            let currentDate = new Date(semesterStart.getFullYear(), semesterStart.getMonth(), 1);
+            const endDate = new Date(semesterEnd.getFullYear(), semesterEnd.getMonth(), 1);
+
+            while (currentDate <= endDate) {
+              months.push(new Date(currentDate));
+              currentDate.setMonth(currentDate.getMonth() + 1);
+            }
+
+            let html = '';
+
+            months.forEach(monthDate => {
+              const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(monthDate);
+
+              // Skip month if completely outside semester range
+              const monthStart = new Date(displayYear, displayMonth, 1);
+              const monthEnd = new Date(displayYear, displayMonth + 1, 0);
+              if (monthEnd < semesterStart || monthStart > semesterEnd) return;
+
+              // Calculate first and last days to show
+              let firstDayToShow = 1;
+              let lastDayToShow = daysCount;
+              let adjustedStartDay = startDay;
+
+              if (semesterStart.getFullYear() === displayYear && semesterStart.getMonth() === displayMonth) {
+                firstDayToShow = semesterStart.getDate();
+                adjustedStartDay = semesterStart.getDay();
+              }
+              if (semesterEnd.getFullYear() === displayYear && semesterEnd.getMonth() === displayMonth) {
+                lastDayToShow = semesterEnd.getDate();
+              }
+
+              // Month header
+              html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 18px; font-weight: bold; color: #c2410c;">';
+              html += monthNames[displayMonth] + ' ' + displayYear;
+              html += '</h3>\n';
+
+              // Calendar table
+              html += '<table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">\n';
+
+              // Day headers
+              html += '  <thead>\n';
+              html += '    <tr>\n';
+              ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+                html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12px; text-align: center; width: 14.28%;">' + day + '</th>\n';
+              });
+              html += '    </tr>\n';
+              html += '  </thead>\n';
+
+              // Calendar body
+              html += '  <tbody>\n';
+
+              let currentWeekDay = 0;
+              let dayOfMonth = 1;
+
+              // Calculate total weeks needed
+              const totalDays = lastDayToShow - firstDayToShow + 1 + adjustedStartDay;
+              const totalWeeks = Math.ceil(totalDays / 7);
+
+              // Start from the first day we want to show, not day 1
+              dayOfMonth = firstDayToShow;
+
+              for (let week = 0; week < totalWeeks; week++) {
+                html += '    <tr>\n';
+
+                for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                  // Empty cells before first day
+                  if (week === 0 && dayOfWeek < adjustedStartDay) {
+                    html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
+                  }
+                  // Days within range
+                  else if (dayOfMonth >= firstDayToShow && dayOfMonth <= lastDayToShow && dayOfMonth <= daysCount) {
+                    const dateStr = formatDate(displayYear, displayMonth, dayOfMonth);
+                    const currentDateObj = new Date(displayYear, displayMonth, dayOfMonth);
+                    const isWeekend = currentDateObj.getDay() % 6 === 0;
+                    const dayType = daySchedule[dateStr];
+                    const dayUnits = classUnits.filter(unit => unit.dates.includes(dateStr));
+
+                    const allTypes = [...instructionalDays, ...nonInstructionalDays];
+                    const dayTypeObj = allTypes.find(d => d.id === dayType);
+                    const dayTypeLabel = dayTypeObj?.label || '';
+
+                    let bgColor = isWeekend ? '#f3f4f6' : '#ffffff';
+                    let textColor = '#000000';
+                    if (!isWeekend && dayTypeObj) {
+                      bgColor = dayTypeObj.color;
+                      textColor = dayTypeObj.textColor;
+                    }
+
+                    html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: ' + bgColor + '; min-height: 80px; vertical-align: top;">\n';
+                    html += '        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
+
+                    if (dayTypeLabel) {
+                      html += '        <div style="font-size: 10px; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
+                    }
+
+                    dayUnits.forEach(unit => {
+                      html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 10px; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
+                    });
+
+                    html += '      </td>\n';
+                    dayOfMonth++;
+                  }
+                  // Empty cells after last day
+                  else {
+                    html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
+                  }
+                }
+
+                html += '    </tr>\n';
+              }
+
+              html += '  </tbody>\n';
+              html += '</table>\n';
+            });
+
+            return html;
+          };
+
+          const copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text).then(() => {
+              alert('HTML copied to clipboard! You can now paste it into Canvas.');
+            }).catch(() => {
+              alert('Failed to copy. Please select and copy manually.');
+            });
+          };
+
           const { year, month } = getDaysInMonth(currentMonth);
 
           return React.createElement('div', { className: `min-h-screen p-8 transition-colors ${darkMode ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900' : 'bg-gradient-to-br from-amber-50 via-orange-50 to-red-50'}` },
@@ -438,8 +592,10 @@
                     },
                       darkMode ? React.createElement(Sun, { className: "w-4 h-4" }) : React.createElement(Moon, { className: "w-4 h-4" })
                     ),
-                    React.createElement('input', { type: "file", accept: ".json", onChange: importSchedule, style: { display: 'none' }, id: "import-input" }),
-                    React.createElement('label', { htmlFor: "import-input", className: "flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition shadow-md cursor-pointer" },
+                    React.createElement('button', {
+                      onClick: () => setShowImportModal(true),
+                      className: "flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition shadow-md"
+                    },
                       React.createElement(Download, { className: "w-4 h-4 rotate-180" }),
                       "Import"
                     ),
@@ -484,12 +640,21 @@
                         React.createElement(ChevronRight, { className: `w-5 h-5 transition-transform ${unitsCollapsed ? '' : 'rotate-90'}` })
                       )
                     ),
-                    React.createElement('button', { 
-                      onClick: () => setShowClassModal(true), 
-                      className: "flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition text-sm font-semibold shadow-md" 
-                    },
-                      React.createElement(Plus, { className: "w-4 h-4" }),
-                      "Add Class"
+                    React.createElement('div', { className: "flex gap-2" },
+                      classes.length > 0 && React.createElement('button', {
+                        onClick: () => setShowCanvasExport('select'),
+                        className: "flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition text-sm font-semibold shadow-md"
+                      },
+                        React.createElement(Download, { className: "w-4 h-4" }),
+                        "Export for Canvas"
+                      ),
+                      React.createElement('button', {
+                        onClick: () => setShowClassModal(true),
+                        className: "flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-xl hover:from-indigo-600 hover:to-indigo-700 transition text-sm font-semibold shadow-md"
+                      },
+                        React.createElement(Plus, { className: "w-4 h-4" }),
+                        "Add Class"
+                      )
                     )
                   ),
                   
@@ -974,6 +1139,108 @@
                     disabled: !unitName.trim(),
                     className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   }, editingUnit ? 'Update Unit' : 'Create Unit')
+                )
+              )
+            )
+          ),
+
+          showImportModal && React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" },
+            React.createElement('div', { className: "bg-white rounded-lg p-6 max-w-md w-full mx-4" },
+              React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                React.createElement('h3', { className: "text-xl font-bold" }, "Import Schedule"),
+                React.createElement('button', {
+                  onClick: () => setShowImportModal(false),
+                  className: "p-2 hover:bg-gray-100 rounded-lg"
+                }, React.createElement(X, { className: "w-5 h-5" }))
+              ),
+              React.createElement('p', { className: "text-sm text-gray-600 mb-4" },
+                "Choose a template or upload your own schedule file:"
+              ),
+              React.createElement('div', { className: "space-y-3" },
+                React.createElement('button', {
+                  onClick: loadBHSTemplate,
+                  className: "w-full px-4 py-3 text-left border-2 border-blue-300 bg-blue-50 rounded-lg hover:bg-blue-100 hover:border-blue-400 transition"
+                },
+                  React.createElement('div', { className: "font-semibold text-blue-900" }, "BHS Blank Schedule Template"),
+                  React.createElement('div', { className: "text-xs text-blue-700 mt-1" }, "Pre-configured with BHS semester dates and break days")
+                ),
+                React.createElement('div', { className: "relative" },
+                  React.createElement('input', {
+                    type: "file",
+                    accept: ".json",
+                    onChange: importSchedule,
+                    style: { display: 'none' },
+                    id: "custom-import-input"
+                  }),
+                  React.createElement('label', {
+                    htmlFor: "custom-import-input",
+                    className: "block w-full px-4 py-3 text-left border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition cursor-pointer"
+                  },
+                    React.createElement('div', { className: "font-semibold text-gray-900" }, "Upload Custom Schedule"),
+                    React.createElement('div', { className: "text-xs text-gray-600 mt-1" }, "Import your own .json schedule file")
+                  )
+                )
+              ),
+              React.createElement('div', { className: "mt-4 flex justify-end" },
+                React.createElement('button', {
+                  onClick: () => setShowImportModal(false),
+                  className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                }, "Cancel")
+              )
+            )
+          ),
+
+          showCanvasExport === 'select' && React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" },
+            React.createElement('div', { className: "bg-white rounded-lg p-6 max-w-md w-full mx-4" },
+              React.createElement('h3', { className: "text-xl font-bold mb-4" }, "Export for Canvas"),
+              React.createElement('p', { className: "text-sm text-gray-600 mb-4" }, "Select which class to export:"),
+              React.createElement('div', { className: "space-y-2" },
+                classes.map(className =>
+                  React.createElement('button', {
+                    key: className,
+                    onClick: () => setShowCanvasExport(className),
+                    className: "w-full px-4 py-3 text-left border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
+                  }, className)
+                ),
+                units.filter(u => !u.class).length > 0 && React.createElement('button', {
+                  onClick: () => setShowCanvasExport('unassigned'),
+                  className: "w-full px-4 py-3 text-left border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
+                }, "Unassigned Units")
+              ),
+              React.createElement('div', { className: "mt-4 flex justify-end" },
+                React.createElement('button', {
+                  onClick: () => setShowCanvasExport(null),
+                  className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                }, "Cancel")
+              )
+            )
+          ),
+
+          showCanvasExport && showCanvasExport !== 'select' && React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" },
+            React.createElement('div', { className: "bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto" },
+              React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                React.createElement('h3', { className: "text-xl font-bold" }, `Canvas Export - ${showCanvasExport === 'unassigned' ? 'Unassigned Units' : showCanvasExport}`),
+                React.createElement('button', {
+                  onClick: () => setShowCanvasExport(null),
+                  className: "p-2 hover:bg-gray-100 rounded-lg"
+                }, React.createElement(X, { className: "w-5 h-5" }))
+              ),
+              React.createElement('div', { className: "flex gap-3 mb-4" },
+                React.createElement('button', {
+                  onClick: () => setShowCanvasExport('select'),
+                  className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                }, "Back"),
+                React.createElement('button', {
+                  onClick: () => copyToClipboard(generateCanvasHTML(showCanvasExport === 'unassigned' ? null : showCanvasExport)),
+                  className: "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+                }, "Copy HTML to Clipboard")
+              ),
+              React.createElement('p', { className: "text-sm text-gray-600 mb-4" },
+                "Copy the HTML below and paste it into a Canvas page (use the HTML editor view):"
+              ),
+              React.createElement('div', { className: "bg-gray-50 border border-gray-300 rounded-lg p-4 mb-4 overflow-x-auto" },
+                React.createElement('pre', { className: "text-xs font-mono whitespace-pre-wrap" },
+                  generateCanvasHTML(showCanvasExport === 'unassigned' ? null : showCanvasExport)
                 )
               )
             )
