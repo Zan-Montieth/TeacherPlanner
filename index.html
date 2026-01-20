@@ -615,6 +615,16 @@
                     const displayDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + monthOffset, 1);
                     const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(displayDate);
 
+                    // In unit planning mode, check if this month has any days within semester range
+                    if (mode === 'units' && semesterStart && semesterEnd) {
+                      const monthStart = new Date(displayYear, displayMonth, 1);
+                      const monthEnd = new Date(displayYear, displayMonth + 1, 0);
+                      // Skip this month if it's completely outside the semester range
+                      if (monthEnd < semesterStart || monthStart > semesterEnd) {
+                        return null;
+                      }
+                    }
+
                     return React.createElement('div', { key: monthOffset },
                       React.createElement('h3', { className: `text-xl font-bold mb-3 ${darkMode ? 'text-orange-400' : 'text-orange-800'}` },
                         `${monthNames[displayMonth]} ${displayYear}`
@@ -632,9 +642,18 @@
                         [...Array(daysCount)].map((_, i) => {
                           const day = i + 1;
                           const dateStr = formatDate(displayYear, displayMonth, day);
+                          const currentDate = new Date(displayYear, displayMonth, day);
                           const dayType = daySchedule[dateStr];
                       const dayUnits = getUnitsForDate(displayYear, displayMonth, day);
-                      const isWeekend = new Date(displayYear, displayMonth, day).getDay() % 6 === 0;
+                      const isWeekend = currentDate.getDay() % 6 === 0;
+
+                      // In unit planning mode, hide days outside semester range
+                      if (mode === 'units' && semesterStart && semesterEnd) {
+                        if (currentDate < semesterStart || currentDate > semesterEnd) {
+                          return React.createElement('div', { key: day, className: "aspect-square" });
+                        }
+                      }
+
                       const inSelection = mode === 'units' && isInDragSelection(displayYear, displayMonth, day);
                       const dayStyle = getDayTypeStyle(dayType);
                       const allTypes = [...instructionalDays, ...nonInstructionalDays];
