@@ -4,6 +4,9 @@ on:
   push:
     branches: [ master ]
 
+with:
+  github_token: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
