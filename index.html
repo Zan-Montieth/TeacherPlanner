@@ -70,6 +70,8 @@
           const [showCanvasExport, setShowCanvasExport] = useState(null);
           const [showImportModal, setShowImportModal] = useState(false);
           const [showScrollTop, setShowScrollTop] = useState(false);
+          const [lastSelectedClass, setLastSelectedClass] = useState('');
+          const [lastSelectedColor, setLastSelectedColor] = useState('#3b82f6');
 
           const [instructionalDays, setInstructionalDays] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_instructionalDays');
@@ -281,6 +283,9 @@
 
           const handleUnitDragEnd = () => {
             if (isDragging && dragStart && dragEnd) {
+              // Set defaults to last selected values when creating a new unit
+              setUnitColor(lastSelectedColor);
+              setSelectedClass(lastSelectedClass);
               setShowUnitModal(true);
             }
           };
@@ -315,9 +320,12 @@
             } else {
               setUnits(prev => [...prev, { id: Date.now(), name: unitName, color: unitColor, dates, class: selectedClass }]);
             }
+            // Remember last selected class and color for next time
+            setLastSelectedClass(selectedClass);
+            setLastSelectedColor(unitColor);
             setUnitName('');
-            setUnitColor(unitColors[0]);
-            setSelectedClass('');
+            setUnitColor(lastSelectedColor);
+            setSelectedClass(lastSelectedClass);
             setShowUnitModal(false);
             setIsDragging(false);
             setDragStart(null);
@@ -712,8 +720,8 @@
                                 React.createElement('div', { className: "font-semibold text-gray-800" }, unit.name),
                                 unit.class && React.createElement('span', { className: "text-xs px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full font-medium" }, unit.class)
                               ),
-                              React.createElement('div', { className: "text-sm text-gray-600" }, 
-                                `${unit.dates.length} class days • ${unit.dates[0]} to ${unit.dates[unit.dates.length - 1]}`
+                              React.createElement('div', { className: "text-sm text-gray-600" },
+                                `${Math.ceil(unit.dates.length / 2)} class periods (${unit.dates.length} days) • ${unit.dates[0]} to ${unit.dates[unit.dates.length - 1]}`
                               )
                             )
                           ),
@@ -898,8 +906,12 @@
                         dayTypeLabel && React.createElement('div', { className: "text-xs mt-0.5 opacity-75 truncate" }, dayTypeLabel),
                         mode === 'units' && dayUnits.map((unit, idx) => React.createElement('div', {
                           key: `${unit.id}-${idx}`,
-                          className: "text-xs mt-1 px-1.5 py-0.5 rounded-lg text-white font-medium shadow-sm",
-                          style: { backgroundColor: unit.color, wordBreak: 'break-word', overflowWrap: 'break-word' }
+                          className: "text-xs mt-1 px-1.5 py-0.5 rounded-lg text-white font-medium shadow-sm cursor-pointer hover:opacity-80 transition",
+                          style: { backgroundColor: unit.color, wordBreak: 'break-word', overflowWrap: 'break-word' },
+                          onClick: (e) => {
+                            e.stopPropagation();
+                            editUnit(unit);
+                          }
                         }, unit.name))
                       );
                     })
@@ -981,8 +993,8 @@
                         React.createElement('div', { className: "font-semibold text-gray-800" }, unit.name),
                         unit.class && React.createElement('span', { className: "text-xs px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full font-medium" }, unit.class)
                       ),
-                      React.createElement('div', { className: "text-sm text-gray-600" }, 
-                        `${unit.dates.length} class days • ${unit.dates[0]} to ${unit.dates[unit.dates.length - 1]}`
+                      React.createElement('div', { className: "text-sm text-gray-600" },
+                        `${Math.ceil(unit.dates.length / 2)} class periods (${unit.dates.length} days) • ${unit.dates[0]} to ${unit.dates[unit.dates.length - 1]}`
                       )
                     )
                   ),
@@ -1183,16 +1195,26 @@
                     "You can also drag on the calendar to adjust dates"
                   )
                 ),
-                React.createElement('div', { className: "flex gap-3 justify-end" },
-                  React.createElement('button', {
-                    onClick: cancelUnit,
-                    className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                  }, "Cancel"),
-                  React.createElement('button', {
-                    onClick: saveUnit,
-                    disabled: !unitName.trim(),
-                    className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  }, editingUnit ? 'Update Unit' : 'Create Unit')
+                React.createElement('div', { className: "flex gap-3 justify-between" },
+                  editingUnit && React.createElement('button', {
+                    onClick: () => {
+                      deleteUnit(editingUnit.id);
+                      setShowUnitModal(false);
+                      setEditingUnit(null);
+                    },
+                    className: "px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                  }, "Delete"),
+                  React.createElement('div', { className: "flex gap-3" },
+                    React.createElement('button', {
+                      onClick: cancelUnit,
+                      className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                    }, "Cancel"),
+                    React.createElement('button', {
+                      onClick: saveUnit,
+                      disabled: !unitName.trim(),
+                      className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    }, editingUnit ? 'Update Unit' : 'Create Unit')
+                  )
                 )
               )
             )
