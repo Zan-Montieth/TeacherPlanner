@@ -898,8 +898,8 @@
                         dayTypeLabel && React.createElement('div', { className: "text-xs mt-0.5 opacity-75 truncate" }, dayTypeLabel),
                         mode === 'units' && dayUnits.map((unit, idx) => React.createElement('div', {
                           key: `${unit.id}-${idx}`,
-                          className: "text-xs mt-1 px-1.5 py-0.5 rounded-lg text-white truncate font-medium shadow-sm",
-                          style: { backgroundColor: unit.color }
+                          className: "text-xs mt-1 px-1.5 py-0.5 rounded-lg text-white font-medium shadow-sm",
+                          style: { backgroundColor: unit.color, wordBreak: 'break-word', overflowWrap: 'break-word' }
                         }, unit.name))
                       );
                     })
