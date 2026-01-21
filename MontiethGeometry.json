@@ -1,0 +1,631 @@
+{
+  "version": "1.0",
+  "semesterStart": "2026-01-26T07:00:00.000Z",
+  "semesterEnd": "2026-06-12T06:00:00.000Z",
+  "instructionalDays": [
+    {
+      "id": "red",
+      "label": "Red Day",
+      "color": "#fca5a5",
+      "textColor": "#991b1b"
+    },
+    {
+      "id": "black",
+      "label": "Black Day",
+      "color": "#1f2937",
+      "textColor": "#ffffff"
+    }
+  ],
+  "nonInstructionalDays": [
+    {
+      "id": "holiday",
+      "label": "Holiday",
+      "color": "#fef3c7",
+      "textColor": "#92400e"
+    },
+    {
+      "id": "teacher-day",
+      "label": "Teacher Day",
+      "color": "#ddd6fe",
+      "textColor": "#5b21b6"
+    },
+    {
+      "id": "finals",
+      "label": "Finals",
+      "color": "#fed7aa",
+      "textColor": "#9a3412"
+    }
+  ],
+  "breakDays": {
+    "2026-06-09": "finals",
+    "2026-06-10": "finals",
+    "2026-06-11": "finals",
+    "2026-06-12": "teacher-day",
+    "2026-05-25": "holiday",
+    "2026-05-22": "teacher-day",
+    "2026-04-10": "teacher-day",
+    "2026-03-17": "holiday",
+    "2026-03-16": "holiday",
+    "2026-03-18": "holiday",
+    "2026-03-19": "holiday",
+    "2026-03-20": "holiday",
+    "2026-02-16": "holiday",
+    "2026-01-26": "teacher-day"
+  },
+  "units": [
+    {
+      "id": 1769009586591,
+      "name": "Mod 7 Triangle Similarity",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-01-27",
+        "2026-01-28",
+        "2026-01-29",
+        "2026-01-30",
+        "2026-02-02",
+        "2026-02-03",
+        "2026-02-04",
+        "2026-02-05",
+        "2026-02-06",
+        "2026-02-09"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769009624184,
+      "name": "Mod 8 - Trig",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-10",
+        "2026-02-11",
+        "2026-02-12",
+        "2026-02-13",
+        "2026-02-17",
+        "2026-02-18",
+        "2026-02-19",
+        "2026-02-20",
+        "2026-02-23",
+        "2026-02-24",
+        "2026-02-25",
+        "2026-02-26",
+        "2026-02-27",
+        "2026-03-02",
+        "2026-03-03",
+        "2026-03-04",
+        "2026-03-05",
+        "2026-03-06",
+        "2026-03-09",
+        "2026-03-10",
+        "2026-03-11",
+        "2026-03-12"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769009715012,
+      "name": "Mod 9 Area & Perimeter",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-23",
+        "2026-03-24",
+        "2026-03-25",
+        "2026-03-26",
+        "2026-03-27",
+        "2026-03-30",
+        "2026-03-31",
+        "2026-04-01",
+        "2026-04-02",
+        "2026-04-03",
+        "2026-04-06",
+        "2026-04-07"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769009772070,
+      "name": "ACT",
+      "color": "#f97316",
+      "dates": [
+        "2026-04-08"
+      ],
+      "class": ""
+    },
+    {
+      "id": 1769009840046,
+      "name": "Mod 10 - Surface Area & Volume",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-09",
+        "2026-04-13",
+        "2026-04-14",
+        "2026-04-15",
+        "2026-04-16",
+        "2026-04-17",
+        "2026-04-20",
+        "2026-04-21",
+        "2026-04-22",
+        "2026-04-23",
+        "2026-04-24",
+        "2026-04-27",
+        "2026-04-28",
+        "2026-04-29",
+        "2026-04-30",
+        "2026-05-01"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769009900924,
+      "name": "Mod 11 - Probability and Stats",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-04",
+        "2026-05-05",
+        "2026-05-06",
+        "2026-05-07",
+        "2026-05-08",
+        "2026-05-11",
+        "2026-05-12",
+        "2026-05-13",
+        "2026-05-14",
+        "2026-05-15",
+        "2026-05-18",
+        "2026-05-19",
+        "2026-05-20",
+        "2026-05-21"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769009971554,
+      "name": "Semester 2 - Review ",
+      "color": "#ec4899",
+      "dates": [
+        "2026-05-26",
+        "2026-05-27",
+        "2026-05-28",
+        "2026-05-29",
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-03",
+        "2026-06-04",
+        "2026-06-05",
+        "2026-06-08"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769010740530,
+      "name": "Ratios, Proportions, & Similar Polygons",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-01-27",
+        "2026-01-28"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769010806783,
+      "name": "Triangle Similarity",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-01-29",
+        "2026-01-30"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769010844273,
+      "name": "Application, & Indirect Measurement",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-02-02",
+        "2026-02-03"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769010852347,
+      "name": "Review",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-02-04",
+        "2026-02-05"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769010877217,
+      "name": "Mod 7 Exam ",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-02-06",
+        "2026-02-09"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011039781,
+      "name": "Radical Operations",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-10",
+        "2026-02-11"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011058050,
+      "name": "Radical Operations Cont'",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-12",
+        "2026-02-13"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011072016,
+      "name": "Quiz 8a",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-17",
+        "2026-02-18"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011180950,
+      "name": "Special Right Triangles",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-19",
+        "2026-02-20"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011199548,
+      "name": "Similarity in Right Triangles",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-23",
+        "2026-02-24"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011216025,
+      "name": "Quiz 8b",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-25",
+        "2026-02-26"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011299722,
+      "name": "Trig Ratios, ∠'s of Elevation & Depression",
+      "color": "#ef4444",
+      "dates": [
+        "2026-02-27",
+        "2026-03-02"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011319083,
+      "name": "Inverse Trig Ratios",
+      "color": "#ef4444",
+      "dates": [
+        "2026-03-03",
+        "2026-03-04"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011337466,
+      "name": "Law Of Sines/ Cosines",
+      "color": "#ef4444",
+      "dates": [
+        "2026-03-05",
+        "2026-03-06"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011350450,
+      "name": "Review",
+      "color": "#ef4444",
+      "dates": [
+        "2026-03-09",
+        "2026-03-10"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011384096,
+      "name": "Exam 8",
+      "color": "#ef4444",
+      "dates": [
+        "2026-03-11",
+        "2026-03-12"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011403457,
+      "name": "SEL",
+      "color": "#f97316",
+      "dates": [
+        "2026-03-13"
+      ],
+      "class": ""
+    },
+    {
+      "id": 1769011446616,
+      "name": "Area For Basic Shapes",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-23",
+        "2026-03-24"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011465688,
+      "name": "Area For Circles",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-25",
+        "2026-03-26"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011480801,
+      "name": "Quiz",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-27",
+        "2026-03-30"
+      ],
+      "class": ""
+    },
+    {
+      "id": 1769011512417,
+      "name": "Area For Composite Shapes",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-31",
+        "2026-04-01"
+      ],
+      "class": ""
+    },
+    {
+      "id": 1769011537664,
+      "name": "Area For Regular Polygons",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-02",
+        "2026-04-03"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011550237,
+      "name": "Exam 9",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-06",
+        "2026-04-07"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011623011,
+      "name": "Surface Area For Prims/ Cylinders",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-09",
+        "2026-04-13"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011659555,
+      "name": "Surface Area For Pyramids/ Cones",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-14",
+        "2026-04-15"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011697930,
+      "name": "Volume of Prisms/ Cylinders",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-16",
+        "2026-04-17"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011714368,
+      "name": "Volume of Pyramids & Cones",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-20",
+        "2026-04-21"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011730475,
+      "name": "Spheres",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-22",
+        "2026-04-23"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011745444,
+      "name": "Project Day 1",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-24",
+        "2026-04-27"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011754606,
+      "name": "Project Day 2",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-28",
+        "2026-04-29"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011767298,
+      "name": "Project Day 3",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-04-30",
+        "2026-05-01"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011794952,
+      "name": "Intro to Probability",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-04",
+        "2026-05-05"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011806719,
+      "name": "Conditional Probability",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-06",
+        "2026-05-07"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011837957,
+      "name": "2 Way Tables/ Venn Diagrams",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-08",
+        "2026-05-11"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011861259,
+      "name": "Combinations/ Permutations",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-12",
+        "2026-05-13"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011891079,
+      "name": "Review",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-14",
+        "2026-05-15"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011902703,
+      "name": "Project Day 1",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-18",
+        "2026-05-19"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011913081,
+      "name": "Project Day 2",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-05-20",
+        "2026-05-21"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011946134,
+      "name": "Escape Rooms Day 1",
+      "color": "#ec4899",
+      "dates": [
+        "2026-05-26",
+        "2026-05-27"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011959728,
+      "name": "Escape Rooms Day 2",
+      "color": "#ec4899",
+      "dates": [
+        "2026-05-28",
+        "2026-05-29"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011982480,
+      "name": "Review 7/8",
+      "color": "#ec4899",
+      "dates": [
+        "2026-06-01",
+        "2026-06-02"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769011993129,
+      "name": "Review 9/10",
+      "color": "#ec4899",
+      "dates": [
+        "2026-06-03",
+        "2026-06-04"
+      ],
+      "class": "Geometry"
+    },
+    {
+      "id": 1769012015071,
+      "name": "Review 11",
+      "color": "#ec4899",
+      "dates": [
+        "2026-06-05",
+        "2026-06-08"
+      ],
+      "class": "Geometry"
+    }
+  ],
+  "classes": [
+    "Algebra",
+    "Geometry"
+  ]
+}

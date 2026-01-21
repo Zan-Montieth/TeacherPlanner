@@ -1,0 +1,605 @@
+{
+  "version": "1.0",
+  "semesterStart": "2026-01-26T07:00:00.000Z",
+  "semesterEnd": "2026-06-12T06:00:00.000Z",
+  "instructionalDays": [
+    {
+      "id": "red",
+      "label": "Red Day",
+      "color": "#fca5a5",
+      "textColor": "#991b1b"
+    },
+    {
+      "id": "black",
+      "label": "Black Day",
+      "color": "#1f2937",
+      "textColor": "#ffffff"
+    }
+  ],
+  "nonInstructionalDays": [
+    {
+      "id": "holiday",
+      "label": "Holiday",
+      "color": "#fef3c7",
+      "textColor": "#92400e"
+    },
+    {
+      "id": "teacher-day",
+      "label": "Teacher Day",
+      "color": "#ddd6fe",
+      "textColor": "#5b21b6"
+    },
+    {
+      "id": "finals",
+      "label": "Finals",
+      "color": "#fed7aa",
+      "textColor": "#9a3412"
+    }
+  ],
+  "breakDays": {
+    "2026-06-09": "finals",
+    "2026-06-10": "finals",
+    "2026-06-11": "finals",
+    "2026-06-12": "teacher-day",
+    "2026-05-25": "holiday",
+    "2026-05-22": "teacher-day",
+    "2026-04-10": "teacher-day",
+    "2026-03-17": "holiday",
+    "2026-03-16": "holiday",
+    "2026-03-18": "holiday",
+    "2026-03-19": "holiday",
+    "2026-03-20": "holiday",
+    "2026-02-16": "holiday",
+    "2026-01-26": "teacher-day"
+  },
+  "units": [
+    {
+      "id": 1769014564606,
+      "name": "Mod 7 Exponent Rules",
+      "color": "#ec4899",
+      "dates": [
+        "2026-01-27",
+        "2026-01-28",
+        "2026-01-29",
+        "2026-01-30",
+        "2026-02-02",
+        "2026-02-03",
+        "2026-02-04",
+        "2026-02-05",
+        "2026-02-06",
+        "2026-02-09"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014607352,
+      "name": "Powers of Monomials",
+      "color": "#ec4899",
+      "dates": [
+        "2026-01-27",
+        "2026-01-28"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014685502,
+      "name": "Dividing Monomials",
+      "color": "#ec4899",
+      "dates": [
+        "2026-01-29",
+        "2026-01-30"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014699270,
+      "name": "Quiz 7",
+      "color": "#ec4899",
+      "dates": [
+        "2026-02-02",
+        "2026-02-03"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014708435,
+      "name": "Negative Exponents",
+      "color": "#ec4899",
+      "dates": [
+        "2026-02-04",
+        "2026-02-05"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014716948,
+      "name": "Exam 7",
+      "color": "#ec4899",
+      "dates": [
+        "2026-02-06",
+        "2026-02-09"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014759209,
+      "name": "Mod 8 Polynomials",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-10",
+        "2026-02-11",
+        "2026-02-12",
+        "2026-02-13",
+        "2026-02-17",
+        "2026-02-18",
+        "2026-02-19",
+        "2026-02-20",
+        "2026-02-23",
+        "2026-02-24",
+        "2026-02-25",
+        "2026-02-26",
+        "2026-02-27",
+        "2026-03-02",
+        "2026-03-03",
+        "2026-03-04",
+        "2026-03-05",
+        "2026-03-06"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014877231,
+      "name": "Intro to Polynomials ",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-10",
+        "2026-02-11"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014903814,
+      "name": "Multiplying/ Dividing Polynomials",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-12",
+        "2026-02-13"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014959835,
+      "name": "Factoring GCF",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-17",
+        "2026-02-18"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769014994573,
+      "name": "Factoring Difference of Squares",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-19",
+        "2026-02-20"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769015045094,
+      "name": "Factoring Trinomials ",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-23",
+        "2026-02-24"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769015053743,
+      "name": "Quiz 8",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-25",
+        "2026-02-26"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769015110599,
+      "name": "Factoring Trinomials ax^2",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-02-27",
+        "2026-03-02"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769015123220,
+      "name": "Factoring Grouping",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-03-03",
+        "2026-03-04"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016752558,
+      "name": "Exam 8",
+      "color": "#8b5cf6",
+      "dates": [
+        "2026-03-05",
+        "2026-03-06"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016780109,
+      "name": "Mod 9 Exponential Functions",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-03-09",
+        "2026-03-10",
+        "2026-03-11",
+        "2026-03-12"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016852462,
+      "name": "Mod 9 Exponential Functions Cont'd",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-03-23",
+        "2026-03-24",
+        "2026-03-25",
+        "2026-03-26"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016863444,
+      "name": "Exponential Functions",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-03-09",
+        "2026-03-10"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016875030,
+      "name": "Writing Equations",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-03-11",
+        "2026-03-12"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016892982,
+      "name": "Growth/ Decay",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-03-23",
+        "2026-03-24"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016899502,
+      "name": "Exam 9",
+      "color": "#f59e0b",
+      "dates": [
+        "2026-03-25",
+        "2026-03-26"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769016963266,
+      "name": "Mod 10 Quadratics",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-27",
+        "2026-03-30",
+        "2026-03-31",
+        "2026-04-01",
+        "2026-04-02",
+        "2026-04-03",
+        "2026-04-06",
+        "2026-04-07"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017000953,
+      "name": "Mod 10 Quadratics Cont'd",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-09",
+        "2026-04-13",
+        "2026-04-14",
+        "2026-04-15",
+        "2026-04-16",
+        "2026-04-17",
+        "2026-04-20",
+        "2026-04-21",
+        "2026-04-22",
+        "2026-04-23",
+        "2026-04-24",
+        "2026-04-27",
+        "2026-04-28",
+        "2026-04-29",
+        "2026-04-30",
+        "2026-05-01",
+        "2026-05-04",
+        "2026-05-05",
+        "2026-05-06",
+        "2026-05-07"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017032051,
+      "name": "Intro To Quadratics",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-27",
+        "2026-03-30"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017067371,
+      "name": "Graphing Quadratics",
+      "color": "#10b981",
+      "dates": [
+        "2026-03-31",
+        "2026-04-01"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017084406,
+      "name": "Vertex Form/ Transformations",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-02",
+        "2026-04-03"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017096295,
+      "name": "Quiz 10a",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-06",
+        "2026-04-07"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017122195,
+      "name": "Roots/ Discriminant",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-09",
+        "2026-04-13"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017140157,
+      "name": "Roots/ Discriminant Cont'd",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-14",
+        "2026-04-15"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017170608,
+      "name": "Solving by Factoring",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-16",
+        "2026-04-17"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017189988,
+      "name": "Quiz 10b",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-20",
+        "2026-04-21"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017205657,
+      "name": "Solving by Square Roots",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-22",
+        "2026-04-23"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017220486,
+      "name": "Completing the Square",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-24",
+        "2026-04-27"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017231903,
+      "name": "Quiz 10c",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-28",
+        "2026-04-29"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017245128,
+      "name": "Quadratic Formula",
+      "color": "#10b981",
+      "dates": [
+        "2026-04-30",
+        "2026-05-01"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017253072,
+      "name": "Review",
+      "color": "#10b981",
+      "dates": [
+        "2026-05-04",
+        "2026-05-05"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017258730,
+      "name": "Exam 10",
+      "color": "#10b981",
+      "dates": [
+        "2026-05-06",
+        "2026-05-07"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017298330,
+      "name": "Mod 11 Stats",
+      "color": "#ef4444",
+      "dates": [
+        "2026-05-08",
+        "2026-05-11",
+        "2026-05-12",
+        "2026-05-13",
+        "2026-05-14",
+        "2026-05-15",
+        "2026-05-18",
+        "2026-05-19",
+        "2026-05-20",
+        "2026-05-21"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017312489,
+      "name": "Basic Stats Review",
+      "color": "#ef4444",
+      "dates": [
+        "2026-05-08",
+        "2026-05-11"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017325233,
+      "name": "Measures of Dispersion",
+      "color": "#ef4444",
+      "dates": [
+        "2026-05-12",
+        "2026-05-13"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017340181,
+      "name": "Normal Distribution/ Z-Scores",
+      "color": "#ef4444",
+      "dates": [
+        "2026-05-14",
+        "2026-05-15"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017355849,
+      "name": "Review",
+      "color": "#ef4444",
+      "dates": [
+        "2026-05-18",
+        "2026-05-19"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017363332,
+      "name": "Quiz 11",
+      "color": "#ef4444",
+      "dates": [
+        "2026-05-20",
+        "2026-05-21"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017382455,
+      "name": "Barbie Drop",
+      "color": "#3b82f6",
+      "dates": [
+        "2026-05-26",
+        "2026-05-27",
+        "2026-05-28",
+        "2026-05-29",
+        "2026-06-01",
+        "2026-06-02"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017397924,
+      "name": "Finals Review",
+      "color": "#14b8a6",
+      "dates": [
+        "2026-06-03",
+        "2026-06-04",
+        "2026-06-05",
+        "2026-06-08"
+      ],
+      "class": "Algebra"
+    },
+    {
+      "id": 1769017590001,
+      "name": "ACT",
+      "color": "#f97316",
+      "dates": [
+        "2026-04-08"
+      ],
+      "class": ""
+    },
+    {
+      "id": 1769017603810,
+      "name": "SEL",
+      "color": "#f97316",
+      "dates": [
+        "2026-03-13"
+      ],
+      "class": ""
+    }
+  ],
+  "classes": [
+    "Algebra",
+    "Geometry"
+  ]
+}
