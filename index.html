@@ -68,6 +68,7 @@
             return saved ? JSON.parse(saved) : false;
           });
           const [showCanvasExport, setShowCanvasExport] = useState(null);
+          const [selectedCanvasClasses, setSelectedCanvasClasses] = useState(new Set());
           const [showImportModal, setShowImportModal] = useState(false);
           const [showScrollTop, setShowScrollTop] = useState(false);
           const [lastSelectedClass, setLastSelectedClass] = useState('');
@@ -469,10 +470,15 @@
             setUnits(prev => prev.map(u => u.class === className ? { ...u, class: '' } : u));
           };
 
-          const generateCanvasHTML = (className) => {
+          const generateCanvasHTML = (classNames) => {
             if (!semesterStart || !semesterEnd) return '<p>Please set semester dates first.</p>';
 
-            const classUnits = className ? units.filter(u => u.class === className) : units.filter(u => !u.class);
+            // Handle multiple classes or unassigned units
+            const classUnits = Array.isArray(classNames)
+              ? units.filter(u => classNames.includes(u.class))
+              : classNames
+                ? units.filter(u => u.class === classNames)
+                : units.filter(u => !u.class);
 
             // Get all months in the semester range
             const months = [];
@@ -684,19 +690,18 @@
                       )
                     )
                   ),
-                  
-                  !unitsCollapsed && React.createElement(React.Fragment, null,
-                    classes.length > 0 && React.createElement('div', { className: "flex gap-2 mb-4 flex-wrap" },
-                      classes.map(className =>
-                        React.createElement('button', {
-                          key: className,
-                          onClick: () => toggleClassVisibility(className),
-                          className: `px-4 py-2 rounded-xl text-sm font-semibold transition shadow-sm ${visibleClasses.has(className) ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`
-                        }, className)
-                      )
-                    ),
 
-                    React.createElement('div', { className: "space-y-3" },
+                  classes.length > 0 && React.createElement('div', { className: "flex gap-2 mb-4 flex-wrap" },
+                    classes.map(className =>
+                      React.createElement('button', {
+                        key: className,
+                        onClick: () => toggleClassVisibility(className),
+                        className: `px-4 py-2 rounded-xl text-sm font-semibold transition shadow-sm ${visibleClasses.has(className) ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`
+                      }, className)
+                    )
+                  ),
+
+                  !unitsCollapsed && React.createElement('div', { className: "space-y-3" },
                       units
                         .filter(u => !u.class || visibleClasses.has(u.class))
                         .sort((a, b) => {
@@ -738,8 +743,7 @@
                         )
                       )
                     )
-                  )
-                ),
+                  ),
 
                 mode === 'setup' && React.createElement('div', { className: `sticky top-0 z-10 mb-4 rounded-xl shadow-lg backdrop-blur-sm transition-colors ${darkMode ? 'bg-gray-800/95 border border-gray-700' : 'bg-white/95 border border-orange-100'}` },
                   React.createElement('div', { className: "space-y-2 p-3" },
@@ -1269,57 +1273,234 @@
           showCanvasExport === 'select' && React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" },
             React.createElement('div', { className: "bg-white rounded-lg p-6 max-w-md w-full mx-4" },
               React.createElement('h3', { className: "text-xl font-bold mb-4" }, "Export for Canvas"),
-              React.createElement('p', { className: "text-sm text-gray-600 mb-4" }, "Select which class to export:"),
-              React.createElement('div', { className: "space-y-2" },
+              React.createElement('p', { className: "text-sm text-gray-600 mb-4" }, "Select which classes to export (you can select multiple):"),
+              React.createElement('div', { className: "space-y-2 mb-4" },
                 classes.map(className =>
-                  React.createElement('button', {
+                  React.createElement('label', {
                     key: className,
-                    onClick: () => setShowCanvasExport(className),
-                    className: "w-full px-4 py-3 text-left border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
-                  }, className)
+                    className: "flex items-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer"
+                  },
+                    React.createElement('input', {
+                      type: "checkbox",
+                      checked: selectedCanvasClasses.has(className),
+                      onChange: (e) => {
+                        const newSet = new Set(selectedCanvasClasses);
+                        if (e.target.checked) {
+                          newSet.add(className);
+                        } else {
+                          newSet.delete(className);
+                        }
+                        setSelectedCanvasClasses(newSet);
+                      },
+                      className: "w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    }),
+                    React.createElement('span', { className: "font-medium" }, className)
+                  )
                 ),
-                units.filter(u => !u.class).length > 0 && React.createElement('button', {
-                  onClick: () => setShowCanvasExport('unassigned'),
-                  className: "w-full px-4 py-3 text-left border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition"
-                }, "Unassigned Units")
+                units.filter(u => !u.class).length > 0 && React.createElement('label', {
+                  className: "flex items-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition cursor-pointer"
+                },
+                  React.createElement('input', {
+                    type: "checkbox",
+                    checked: selectedCanvasClasses.has('unassigned'),
+                    onChange: (e) => {
+                      const newSet = new Set(selectedCanvasClasses);
+                      if (e.target.checked) {
+                        newSet.add('unassigned');
+                      } else {
+                        newSet.delete('unassigned');
+                      }
+                      setSelectedCanvasClasses(newSet);
+                    },
+                    className: "w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  }),
+                  React.createElement('span', { className: "font-medium" }, "Unassigned Units")
+                )
               ),
-              React.createElement('div', { className: "mt-4 flex justify-end" },
+              React.createElement('div', { className: "flex gap-3 justify-end" },
                 React.createElement('button', {
-                  onClick: () => setShowCanvasExport(null),
+                  onClick: () => {
+                    setShowCanvasExport(null);
+                    setSelectedCanvasClasses(new Set());
+                  },
                   className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                }, "Cancel")
+                }, "Cancel"),
+                React.createElement('button', {
+                  onClick: () => {
+                    if (selectedCanvasClasses.size > 0) {
+                      setShowCanvasExport('preview');
+                    }
+                  },
+                  disabled: selectedCanvasClasses.size === 0,
+                  className: "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                }, "Continue")
               )
             )
           ),
 
           showCanvasExport && showCanvasExport !== 'select' && React.createElement('div', { className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" },
-            React.createElement('div', { className: "bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto" },
-              React.createElement('div', { className: "flex items-center justify-between mb-4" },
-                React.createElement('h3', { className: "text-xl font-bold" }, `Canvas Export - ${showCanvasExport === 'unassigned' ? 'Unassigned Units' : showCanvasExport}`),
-                React.createElement('button', {
-                  onClick: () => setShowCanvasExport(null),
-                  className: "p-2 hover:bg-gray-100 rounded-lg"
-                }, React.createElement(X, { className: "w-5 h-5" }))
-              ),
-              React.createElement('div', { className: "flex gap-3 mb-4" },
-                React.createElement('button', {
-                  onClick: () => setShowCanvasExport('select'),
-                  className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-                }, "Back"),
-                React.createElement('button', {
-                  onClick: () => copyToClipboard(generateCanvasHTML(showCanvasExport === 'unassigned' ? null : showCanvasExport)),
-                  className: "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
-                }, "Copy HTML to Clipboard")
-              ),
-              React.createElement('p', { className: "text-sm text-gray-600 mb-4" },
-                "Copy the HTML below and paste it into a Canvas page (use the HTML editor view):"
-              ),
-              React.createElement('div', { className: "bg-gray-50 border border-gray-300 rounded-lg p-4 mb-4 overflow-x-auto" },
-                React.createElement('pre', { className: "text-xs font-mono whitespace-pre-wrap" },
-                  generateCanvasHTML(showCanvasExport === 'unassigned' ? null : showCanvasExport)
+            (() => {
+              // Build array of class names from selected checkboxes
+              const selectedClassArray = Array.from(selectedCanvasClasses).filter(c => c !== 'unassigned');
+              const includeUnassigned = selectedCanvasClasses.has('unassigned');
+
+              // Get units for selected classes
+              let displayUnits = [];
+              if (selectedClassArray.length > 0) {
+                displayUnits = units.filter(u => selectedClassArray.includes(u.class));
+              }
+              if (includeUnassigned) {
+                displayUnits = [...displayUnits, ...units.filter(u => !u.class)];
+              }
+
+              const exportTitle = selectedClassArray.length > 0 && includeUnassigned
+                ? `${selectedClassArray.join(', ')} + Unassigned`
+                : selectedClassArray.length > 0
+                  ? selectedClassArray.join(', ')
+                  : 'Unassigned Units';
+
+              // Generate HTML with all selected units combined into one calendar
+              const htmlToExport = (() => {
+                if (includeUnassigned && selectedClassArray.length === 0) {
+                  // Only unassigned units
+                  return generateCanvasHTML(null);
+                } else if (includeUnassigned && selectedClassArray.length > 0) {
+                  // Both classes and unassigned - need to combine them in a single calendar
+                  // Create a custom filter that includes both selected classes AND unassigned
+                  const allUnits = units.filter(u =>
+                    selectedClassArray.includes(u.class) || !u.class
+                  );
+
+                  // Temporarily modify the generateCanvasHTML to use our filtered units
+                  // We'll pass a special marker and intercept it
+                  const originalUnits = units;
+
+                  // Generate HTML for the combined view
+                  const monthsHTML = [];
+                  const months = [];
+                  let currentDate = new Date(semesterStart.getFullYear(), semesterStart.getMonth(), 1);
+                  const endDate = new Date(semesterEnd.getFullYear(), semesterEnd.getMonth(), 1);
+
+                  while (currentDate <= endDate) {
+                    months.push(new Date(currentDate));
+                    currentDate.setMonth(currentDate.getMonth() + 1);
+                  }
+
+                  let html = '';
+                  months.forEach(monthDate => {
+                    const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(monthDate);
+                    const monthStart = new Date(displayYear, displayMonth, 1);
+                    const monthEnd = new Date(displayYear, displayMonth + 1, 0);
+                    if (monthEnd < semesterStart || monthStart > semesterEnd) return;
+
+                    let firstDayToShow = 1;
+                    let lastDayToShow = daysCount;
+                    let adjustedStartDay = startDay;
+
+                    if (semesterStart.getFullYear() === displayYear && semesterStart.getMonth() === displayMonth) {
+                      firstDayToShow = semesterStart.getDate();
+                      adjustedStartDay = semesterStart.getDay();
+                    }
+                    if (semesterEnd.getFullYear() === displayYear && semesterEnd.getMonth() === displayMonth) {
+                      lastDayToShow = semesterEnd.getDate();
+                    }
+
+                    html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 18px; font-weight: bold; color: #c2410c;">';
+                    html += monthNames[displayMonth] + ' ' + displayYear;
+                    html += '</h3>\n';
+                    html += '<table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">\n';
+                    html += '  <thead>\n    <tr>\n';
+                    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+                      html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12px; text-align: center; width: 14.28%;">' + day + '</th>\n';
+                    });
+                    html += '    </tr>\n  </thead>\n  <tbody>\n';
+
+                    const totalDays = lastDayToShow - firstDayToShow + 1 + adjustedStartDay;
+                    const totalWeeks = Math.ceil(totalDays / 7);
+                    let dayOfMonth = firstDayToShow;
+
+                    for (let week = 0; week < totalWeeks; week++) {
+                      html += '    <tr>\n';
+                      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+                        if (week === 0 && dayOfWeek < adjustedStartDay) {
+                          html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
+                        } else if (dayOfMonth >= firstDayToShow && dayOfMonth <= lastDayToShow && dayOfMonth <= daysCount) {
+                          const dateStr = formatDate(displayYear, displayMonth, dayOfMonth);
+                          const currentDateObj = new Date(displayYear, displayMonth, dayOfMonth);
+                          const isWeekend = currentDateObj.getDay() % 6 === 0;
+                          const dayType = daySchedule[dateStr];
+                          const dayUnits = allUnits.filter(unit => unit.dates.includes(dateStr));
+
+                          const allTypes = [...instructionalDays, ...nonInstructionalDays];
+                          const dayTypeObj = allTypes.find(d => d.id === dayType);
+                          const dayTypeLabel = dayTypeObj?.label || '';
+
+                          let bgColor = isWeekend ? '#f3f4f6' : '#ffffff';
+                          let textColor = '#000000';
+                          if (!isWeekend && dayTypeObj) {
+                            bgColor = dayTypeObj.color;
+                            textColor = dayTypeObj.textColor;
+                          }
+
+                          html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: ' + bgColor + '; min-height: 80px; vertical-align: top;">\n';
+                          html += '        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
+
+                          if (dayTypeLabel) {
+                            html += '        <div style="font-size: 10px; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
+                          }
+
+                          dayUnits.forEach(unit => {
+                            html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 10px; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
+                          });
+
+                          html += '      </td>\n';
+                          dayOfMonth++;
+                        } else {
+                          html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
+                        }
+                      }
+                      html += '    </tr>\n';
+                    }
+                    html += '  </tbody>\n</table>\n';
+                  });
+                  return html;
+                } else {
+                  // Only selected classes, no unassigned
+                  return generateCanvasHTML(selectedClassArray);
+                }
+              })();
+
+              return React.createElement('div', { className: "bg-white rounded-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto" },
+                React.createElement('div', { className: "flex items-center justify-between mb-4" },
+                  React.createElement('h3', { className: "text-xl font-bold" }, `Canvas Export - ${exportTitle}`),
+                  React.createElement('button', {
+                    onClick: () => {
+                      setShowCanvasExport(null);
+                      setSelectedCanvasClasses(new Set());
+                    },
+                    className: "p-2 hover:bg-gray-100 rounded-lg"
+                  }, React.createElement(X, { className: "w-5 h-5" }))
+                ),
+                React.createElement('div', { className: "flex gap-3 mb-4" },
+                  React.createElement('button', {
+                    onClick: () => setShowCanvasExport('select'),
+                    className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                  }, "Back"),
+                  React.createElement('button', {
+                    onClick: () => copyToClipboard(htmlToExport),
+                    className: "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+                  }, "Copy HTML to Clipboard")
+                ),
+                React.createElement('p', { className: "text-sm text-gray-600 mb-4" },
+                  "Copy the HTML below and paste it into a Canvas page (use the HTML editor view):"
+                ),
+                React.createElement('div', { className: "bg-gray-50 border border-gray-300 rounded-lg p-4 mb-4 overflow-x-auto" },
+                  React.createElement('pre', { className: "text-xs font-mono whitespace-pre-wrap" },
+                    htmlToExport
+                  )
                 )
-              )
-            )
+              );
+            })()
           ),
 
           showScrollTop && React.createElement('button', {
