@@ -69,6 +69,7 @@
           });
           const [showCanvasExport, setShowCanvasExport] = useState(null);
           const [showImportModal, setShowImportModal] = useState(false);
+          const [showScrollTop, setShowScrollTop] = useState(false);
 
           const [instructionalDays, setInstructionalDays] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_instructionalDays');
@@ -220,6 +221,18 @@
           useEffect(() => {
             localStorage.setItem('teacherPlanner_unitsCollapsed', JSON.stringify(unitsCollapsed));
           }, [unitsCollapsed]);
+
+          useEffect(() => {
+            const handleScroll = () => {
+              setShowScrollTop(window.scrollY > 500);
+            };
+            window.addEventListener('scroll', handleScroll);
+            return () => window.removeEventListener('scroll', handleScroll);
+          }, []);
+
+          const scrollToTop = () => {
+            document.getElementById('calendar-top')?.scrollIntoView({ behavior: 'smooth' });
+          };
 
           const resetSetup = () => {
             setSemesterStart(null);
@@ -776,7 +789,7 @@
                   )
                 ),
 
-                React.createElement('div', { className: "flex items-center justify-between mb-5" },
+                mode === 'setup' && React.createElement('div', { className: "flex items-center justify-between mb-5" },
                   React.createElement('button', {
                     onClick: () => changeMonth(-1),
                     className: `p-2.5 rounded-xl transition ${darkMode ? 'hover:bg-gray-700 text-orange-400' : 'hover:bg-orange-100 text-orange-600'}`
@@ -788,11 +801,32 @@
                   }, React.createElement(ChevronRight, { className: "w-6 h-6" }))
                 ),
 
-                React.createElement('div', { className: "space-y-8" },
-                  [0, 1].map(monthOffset => {
-                    const displayDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + monthOffset, 1);
-                    const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(displayDate);
+                React.createElement('div', { className: "space-y-8", id: "calendar-top" },
+                  (() => {
+                    // In unit planning mode, show all months from semester start to end
+                    if (mode === 'units' && semesterStart && semesterEnd) {
+                      const months = [];
+                      let currentDate = new Date(semesterStart.getFullYear(), semesterStart.getMonth(), 1);
+                      const endDate = new Date(semesterEnd.getFullYear(), semesterEnd.getMonth(), 1);
 
+                      while (currentDate <= endDate) {
+                        months.push(new Date(currentDate));
+                        currentDate.setMonth(currentDate.getMonth() + 1);
+                      }
+
+                      return months.map((displayDate, idx) => {
+                        const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(displayDate);
+                        return { monthOffset: idx, displayDate, daysCount, startDay, displayYear, displayMonth };
+                      });
+                    } else {
+                      // In setup mode, show current month and next month
+                      return [0, 1].map(monthOffset => {
+                        const displayDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + monthOffset, 1);
+                        const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(displayDate);
+                        return { monthOffset, displayDate, daysCount, startDay, displayYear, displayMonth };
+                      });
+                    }
+                  })().map(({ monthOffset, displayDate, daysCount, startDay, displayYear, displayMonth }) => {
                     // In unit planning mode, check if this month has any days within semester range
                     let adjustedStartDay = startDay;
                     let firstDayToShow = 1;
@@ -1264,6 +1298,14 @@
                 )
               )
             )
+          ),
+
+          showScrollTop && React.createElement('button', {
+            onClick: scrollToTop,
+            className: `fixed bottom-8 right-8 p-4 rounded-full shadow-lg transition-all hover:scale-110 z-40 ${darkMode ? 'bg-orange-500 hover:bg-orange-600' : 'bg-orange-600 hover:bg-orange-700'} text-white`,
+            'aria-label': 'Return to top'
+          },
+            React.createElement(ChevronRight, { className: "w-6 h-6 transform -rotate-90" })
           )
         )
       );
