@@ -550,7 +550,7 @@
               }
 
               // Month header
-              html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 18px; font-weight: bold; color: #c2410c;">';
+              html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 12pt; font-weight: bold; color: #c2410c;">';
               html += monthNames[displayMonth] + ' ' + displayYear;
               html += '</h3>\n';
 
@@ -561,7 +561,7 @@
               html += '  <thead>\n';
               html += '    <tr>\n';
               ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-                html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12px; text-align: center; width: 14.28%;">' + day + '</th>\n';
+                html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12pt; text-align: center; width: 14.28%;">' + day + '</th>\n';
               });
               html += '    </tr>\n';
               html += '  </thead>\n';
@@ -607,14 +607,14 @@
                     }
 
                     html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: ' + bgColor + '; min-height: 80px; vertical-align: top;">\n';
-                    html += '        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
+                    html += '        <div style="font-weight: bold; font-size: 12pt; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
 
                     if (dayTypeLabel) {
-                      html += '        <div style="font-size: 10px; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
+                      html += '        <div style="font-size: 12pt; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
                     }
 
                     dayUnits.forEach(unit => {
-                      html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 10px; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
+                      html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 12pt; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
                     });
 
                     html += '      </td>\n';
@@ -1473,13 +1473,13 @@
                       lastDayToShow = semesterEnd.getDate();
                     }
 
-                    html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 18px; font-weight: bold; color: #c2410c;">';
+                    html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 12pt; font-weight: bold; color: #c2410c;">';
                     html += monthNames[displayMonth] + ' ' + displayYear;
                     html += '</h3>\n';
                     html += '<table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">\n';
                     html += '  <thead>\n    <tr>\n';
                     ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-                      html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12px; text-align: center; width: 14.28%;">' + day + '</th>\n';
+                      html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12pt; text-align: center; width: 14.28%;">' + day + '</th>\n';
                     });
                     html += '    </tr>\n  </thead>\n  <tbody>\n';
 
@@ -1511,14 +1511,14 @@
                           }
 
                           html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: ' + bgColor + '; min-height: 80px; vertical-align: top;">\n';
-                          html += '        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
+                          html += '        <div style="font-weight: bold; font-size: 12pt; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
 
                           if (dayTypeLabel) {
-                            html += '        <div style="font-size: 10px; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
+                            html += '        <div style="font-size: 12pt; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
                           }
 
                           dayUnits.forEach(unit => {
-                            html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 10px; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
+                            html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 12pt; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
                           });
 
                           html += '      </td>\n';
