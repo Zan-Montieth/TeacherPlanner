@@ -73,6 +73,7 @@
           const [showScrollTop, setShowScrollTop] = useState(false);
           const [lastSelectedClass, setLastSelectedClass] = useState('');
           const [lastSelectedColor, setLastSelectedColor] = useState('#3b82f6');
+          const [selectedMeetingDays, setSelectedMeetingDays] = useState('');
 
           const [instructionalDays, setInstructionalDays] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_instructionalDays');
@@ -291,7 +292,7 @@
             }
           };
 
-          const getDatesBetween = (start, end) => {
+          const getDatesBetween = (start, end, meetingDays = '') => {
             const dates = [];
             const startDate = new Date(start.year, start.month, start.day);
             const endDate = new Date(end.year, end.month, end.day);
@@ -303,7 +304,9 @@
                 const dayType = daySchedule[dateStr];
                 // Only include instructional days, skip non-instructional days (holidays, etc.)
                 const isInstructionalDay = instructionalDays.some(d => d.id === dayType);
-                if (isInstructionalDay) {
+                // If meetingDays is set, only include days that match that day type
+                const matchesMeetingDays = !meetingDays || dayType === meetingDays;
+                if (isInstructionalDay && matchesMeetingDays) {
                   dates.push(dateStr);
                 }
               }
@@ -314,12 +317,12 @@
 
           const saveUnit = () => {
             if (!unitName.trim()) return;
-            const dates = getDatesBetween(dragStart, dragEnd);
+            const dates = getDatesBetween(dragStart, dragEnd, selectedMeetingDays);
             if (editingUnit) {
-              setUnits(prev => prev.map(u => u.id === editingUnit.id ? { ...u, name: unitName, color: unitColor, dates, class: selectedClass } : u));
+              setUnits(prev => prev.map(u => u.id === editingUnit.id ? { ...u, name: unitName, color: unitColor, dates, class: selectedClass, meetingDays: selectedMeetingDays } : u));
               setEditingUnit(null);
             } else {
-              setUnits(prev => [...prev, { id: Date.now(), name: unitName, color: unitColor, dates, class: selectedClass }]);
+              setUnits(prev => [...prev, { id: Date.now(), name: unitName, color: unitColor, dates, class: selectedClass, meetingDays: selectedMeetingDays }]);
             }
             // Remember last selected class and color for next time
             setLastSelectedClass(selectedClass);
@@ -327,6 +330,7 @@
             setUnitName('');
             setUnitColor(lastSelectedColor);
             setSelectedClass(lastSelectedClass);
+            setSelectedMeetingDays('');
             setShowUnitModal(false);
             setIsDragging(false);
             setDragStart(null);
@@ -338,6 +342,7 @@
             setUnitName(unit.name);
             setUnitColor(unit.color);
             setSelectedClass(unit.class || '');
+            setSelectedMeetingDays(unit.meetingDays || '');
             if (unit.dates.length > 0) {
               const firstDate = parseDate(unit.dates[0]);
               const lastDate = parseDate(unit.dates[unit.dates.length - 1]);
@@ -355,6 +360,7 @@
             setDragEnd(null);
             setUnitName('');
             setSelectedClass('');
+            setSelectedMeetingDays('');
             setEditingUnit(null);
           };
 
@@ -362,7 +368,7 @@
 
           const isInDragSelection = (year, month, day) => {
             if (!isDragging || !dragStart || !dragEnd) return false;
-            return getDatesBetween(dragStart, dragEnd).includes(formatDate(year, month, day));
+            return getDatesBetween(dragStart, dragEnd, selectedMeetingDays).includes(formatDate(year, month, day));
           };
 
           const getUnitsForDate = (year, month, day) => {
@@ -1185,6 +1191,17 @@
                   },
                     React.createElement('option', { value: "" }, "No class assigned"),
                     classes.map(className => React.createElement('option', { key: className, value: className }, className))
+                  )
+                ),
+                React.createElement('div', null,
+                  React.createElement('label', { className: "block text-sm font-medium mb-2" }, "Meeting Days"),
+                  React.createElement('select', {
+                    value: selectedMeetingDays,
+                    onChange: (e) => setSelectedMeetingDays(e.target.value),
+                    className: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  },
+                    React.createElement('option', { value: "" }, "All Days"),
+                    instructionalDays.map(day => React.createElement('option', { key: day.id, value: day.id }, day.label + " Only"))
                   )
                 ),
                 React.createElement('div', null,
