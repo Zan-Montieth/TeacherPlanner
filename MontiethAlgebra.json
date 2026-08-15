@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "semesterStart": "2026-08-26T06:00:00.000Z",
+  "semesterStart": "2026-09-01T06:00:00.000Z",
   "semesterEnd": "2027-01-22T07:00:00.000Z",
   "instructionalDays": [
     {
@@ -43,10 +43,6 @@
     }
   ],
   "breakDays": {
-    "2026-08-26": "teacher-day",
-    "2026-08-27": "teacher-day",
-    "2026-08-28": "teacher-day",
-    "2026-08-31": "break-1786814216886",
     "2026-09-07": "holiday",
     "2026-09-28": "teacher-day",
     "2026-10-15": "teacher-day",
