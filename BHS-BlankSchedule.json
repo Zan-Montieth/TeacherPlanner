@@ -1,19 +1,19 @@
 {
   "version": "1.0",
-  "semesterStart": "2026-01-26T07:00:00.000Z",
-  "semesterEnd": "2026-06-12T06:00:00.000Z",
+  "semesterStart": "2026-09-01T06:00:00.000Z",
+  "semesterEnd": "2027-01-22T07:00:00.000Z",
   "instructionalDays": [
     {
       "id": "red",
       "label": "Red Day",
-      "color": "#fca5a5",
-      "textColor": "#991b1b"
+      "color": "#c01c28",
+      "textColor": "#ffffff"
     },
     {
       "id": "black",
       "label": "Black Day",
-      "color": "#1f2937",
-      "textColor": "#ffffff"
+      "color": "#c0bfbc",
+      "textColor": "#000000"
     }
   ],
   "nonInstructionalDays": [
@@ -34,23 +34,37 @@
       "label": "Finals",
       "color": "#fed7aa",
       "textColor": "#9a3412"
+    },
+    {
+      "id": "break-1786814216886",
+      "label": "First Day",
+      "color": "#fef3c7",
+      "textColor": "#92400e"
     }
   ],
   "breakDays": {
-    "2026-06-09": "finals",
-    "2026-06-10": "finals",
-    "2026-06-11": "finals",
-    "2026-06-12": "teacher-day",
-    "2026-05-25": "holiday",
-    "2026-05-22": "teacher-day",
-    "2026-04-10": "teacher-day",
-    "2026-03-17": "holiday",
-    "2026-03-16": "holiday",
-    "2026-03-18": "holiday",
-    "2026-03-19": "holiday",
-    "2026-03-20": "holiday",
-    "2026-02-16": "holiday",
-    "2026-01-26": "teacher-day"
+    "2026-09-07": "holiday",
+    "2026-09-28": "teacher-day",
+    "2026-10-15": "teacher-day",
+    "2026-10-16": "teacher-day",
+    "2026-11-20": "teacher-day",
+    "2026-11-25": "holiday",
+    "2026-11-26": "holiday",
+    "2026-11-27": "holiday",
+    "2026-12-21": "holiday",
+    "2026-12-30": "holiday",
+    "2026-12-23": "holiday",
+    "2026-12-22": "holiday",
+    "2026-12-29": "holiday",
+    "2026-12-24": "holiday",
+    "2026-12-25": "holiday",
+    "2026-12-31": "holiday",
+    "2026-12-28": "holiday",
+    "2027-01-01": "holiday",
+    "2027-01-20": "finals",
+    "2027-01-21": "finals",
+    "2027-01-22": "finals",
+    "2027-01-18": "teacher-day"
   },
   "units": [],
   "classes": [

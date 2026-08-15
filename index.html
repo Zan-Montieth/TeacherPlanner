@@ -46,7 +46,7 @@
           const [showUnitModal, setShowUnitModal] = useState(false);
           const [showDayTypesModal, setShowDayTypesModal] = useState(false);
           const [unitName, setUnitName] = useState('');
-          const [unitColor, setUnitColor] = useState('#3b82f6');
+          const [unitColor, setUnitColor] = useState('#a7f3d0');
           const [editingUnit, setEditingUnit] = useState(null);
           const [classes, setClasses] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_classes');
@@ -72,7 +72,7 @@
           const [showImportModal, setShowImportModal] = useState(false);
           const [showScrollTop, setShowScrollTop] = useState(false);
           const [lastSelectedClass, setLastSelectedClass] = useState('');
-          const [lastSelectedColor, setLastSelectedColor] = useState('#3b82f6');
+          const [lastSelectedColor, setLastSelectedColor] = useState('#a7f3d0');
           const [selectedMeetingDays, setSelectedMeetingDays] = useState('');
 
           const [instructionalDays, setInstructionalDays] = useState(() => {
@@ -92,7 +92,21 @@
             ];
           });
 
-          const unitColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+          // Picks readable text for a given background using perceived brightness (YIQ).
+          const getReadableTextColor = (hexColor) => {
+            const hex = hexColor.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            return brightness > 150 ? '#1f2937' : '#ffffff';
+          };
+
+          // Pastel so the paired dark text (and Canvas's own default blue hyperlink
+          // color, which we can't override since Canvas strips <style> tags) both stay
+          // readable on top of it. Also avoids red/near-black, which clash with the
+          // default Red Day / Black Day schedule colors.
+          const unitColors = ['#a7f3d0', '#99f6e4', '#d9f99d', '#fde68a', '#fbcfe8', '#fecdd3', '#f5d0fe', '#e7e5e4'];
           const colorOptions = ['#fca5a5', '#fdba74', '#fcd34d', '#bef264', '#86efac', '#67e8f9', '#93c5fd', '#c4b5fd', '#f9a8d4', '#fda4af', '#991b1b', '#9a3412', '#92400e', '#365314', '#065f46', '#164e63', '#1e3a8a', '#5b21b6', '#831843', '#881337', '#1f2937', '#374151', '#6b7280', '#d1d5db', '#f3f4f6'];
           const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -506,15 +520,12 @@
             setUnits(prev => prev.map(u => u.class === className ? { ...u, class: '' } : u));
           };
 
-          const generateCanvasHTML = (classNames) => {
-            if (!semesterStart || !semesterEnd) return '<p>Please set semester dates first.</p>';
+          const CANVAS_WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
-            // Handle multiple classes or unassigned units
-            const classUnits = Array.isArray(classNames)
-              ? units.filter(u => classNames.includes(u.class))
-              : classNames
-                ? units.filter(u => u.class === classNames)
-                : units.filter(u => !u.class);
+          // Renders a Mon-Fri only calendar (weekends are skipped entirely) styled to
+          // match the rounded, spaced-out day cells used in the live planner view.
+          const generateCanvasCalendarHTML = (classUnits) => {
+            if (!semesterStart || !semesterEnd) return '<p>Please set semester dates first.</p>';
 
             // Get all months in the semester range
             const months = [];
@@ -529,7 +540,7 @@
             let html = '';
 
             months.forEach(monthDate => {
-              const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(monthDate);
+              const { daysInMonth: daysCount, year: displayYear, month: displayMonth } = getDaysInMonth(monthDate);
 
               // Skip month if completely outside semester range
               const monthStart = new Date(displayYear, displayMonth, 1);
@@ -539,29 +550,43 @@
               // Calculate first and last days to show
               let firstDayToShow = 1;
               let lastDayToShow = daysCount;
-              let adjustedStartDay = startDay;
 
               if (semesterStart.getFullYear() === displayYear && semesterStart.getMonth() === displayMonth) {
                 firstDayToShow = semesterStart.getDate();
-                adjustedStartDay = semesterStart.getDay();
               }
               if (semesterEnd.getFullYear() === displayYear && semesterEnd.getMonth() === displayMonth) {
                 lastDayToShow = semesterEnd.getDate();
               }
 
+              // Group the month's weekdays (Mon-Fri) into rows, skipping Sat/Sun entirely
+              const weeks = [];
+              let currentWeek = null;
+              for (let d = 1; d <= daysCount; d++) {
+                const jsDay = new Date(displayYear, displayMonth, d).getDay(); // 0=Sun..6=Sat
+                if (jsDay === 0 || jsDay === 6) continue;
+                const col = jsDay - 1; // Mon=0 .. Fri=4
+                if (col === 0 || !currentWeek) {
+                  if (currentWeek) weeks.push(currentWeek);
+                  currentWeek = [null, null, null, null, null];
+                }
+                currentWeek[col] = d;
+              }
+              if (currentWeek) weeks.push(currentWeek);
+
               // Month header
-              html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 12pt; font-weight: bold; color: #c2410c;">';
+              html += '<h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 14pt; font-weight: bold; color: #c2410c;">';
               html += monthNames[displayMonth] + ' ' + displayYear;
               html += '</h3>\n';
 
-              // Calendar table
-              html += '<table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">\n';
+              // Calendar table - separated border-spacing gives each cell its own gap,
+              // and each cell gets its own rounded corners, like the in-app day squares.
+              html += '<table style="border-collapse: separate; border-spacing: 8px; width: 100%; table-layout: fixed;">\n';
 
               // Day headers
               html += '  <thead>\n';
               html += '    <tr>\n';
-              ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-                html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12pt; text-align: center; width: 14.28%;">' + day + '</th>\n';
+              CANVAS_WEEKDAYS.forEach(day => {
+                html += '      <th style="padding: 8px; color: #9a3412; font-size: 12pt; font-weight: bold; text-align: center; width: 20%;">' + day + '</th>\n';
               });
               html += '    </tr>\n';
               html += '  </thead>\n';
@@ -569,71 +594,60 @@
               // Calendar body
               html += '  <tbody>\n';
 
-              let currentWeekDay = 0;
-              let dayOfMonth = 1;
-
-              // Calculate total weeks needed
-              const totalDays = lastDayToShow - firstDayToShow + 1 + adjustedStartDay;
-              const totalWeeks = Math.ceil(totalDays / 7);
-
-              // Start from the first day we want to show, not day 1
-              dayOfMonth = firstDayToShow;
-
-              for (let week = 0; week < totalWeeks; week++) {
+              weeks.forEach(week => {
                 html += '    <tr>\n';
 
-                for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-                  // Empty cells before first day
-                  if (week === 0 && dayOfWeek < adjustedStartDay) {
-                    html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
+                week.forEach(dayOfMonth => {
+                  if (dayOfMonth === null || dayOfMonth < firstDayToShow || dayOfMonth > lastDayToShow) {
+                    html += '      <td style="padding: 10px; min-height: 90px; vertical-align: top;"></td>\n';
+                    return;
                   }
-                  // Days within range
-                  else if (dayOfMonth >= firstDayToShow && dayOfMonth <= lastDayToShow && dayOfMonth <= daysCount) {
-                    const dateStr = formatDate(displayYear, displayMonth, dayOfMonth);
-                    const currentDateObj = new Date(displayYear, displayMonth, dayOfMonth);
-                    const isWeekend = currentDateObj.getDay() % 6 === 0;
-                    const dayType = daySchedule[dateStr];
-                    const dayUnits = classUnits.filter(unit => unit.dates.includes(dateStr));
 
-                    const allTypes = [...instructionalDays, ...nonInstructionalDays];
-                    const dayTypeObj = allTypes.find(d => d.id === dayType);
-                    const dayTypeLabel = dayTypeObj?.label || '';
+                  const dateStr = formatDate(displayYear, displayMonth, dayOfMonth);
+                  const dayType = daySchedule[dateStr];
+                  const dayUnits = classUnits.filter(unit => unit.dates.includes(dateStr));
 
-                    let bgColor = isWeekend ? '#f3f4f6' : '#ffffff';
-                    let textColor = '#000000';
-                    if (!isWeekend && dayTypeObj) {
-                      bgColor = dayTypeObj.color;
-                      textColor = dayTypeObj.textColor;
-                    }
+                  const allTypes = [...instructionalDays, ...nonInstructionalDays];
+                  const dayTypeObj = allTypes.find(d => d.id === dayType);
+                  const dayTypeLabel = dayTypeObj?.label || '';
 
-                    html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: ' + bgColor + '; min-height: 80px; vertical-align: top;">\n';
-                    html += '        <div style="font-weight: bold; font-size: 12pt; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
+                  const bgColor = dayTypeObj ? dayTypeObj.color : '#ffffff';
+                  const textColor = dayTypeObj ? dayTypeObj.textColor : '#000000';
+                  const borderColor = dayTypeObj ? dayTypeObj.textColor : '#fed7aa';
 
-                    if (dayTypeLabel) {
-                      html += '        <div style="font-size: 12pt; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
-                    }
+                  html += '      <td style="padding: 10px; min-height: 90px; vertical-align: top; background-color: ' + bgColor + '; color: ' + textColor + '; border: 2px solid ' + borderColor + '; border-radius: 10px;">\n';
+                  html += '        <div style="font-weight: bold; font-size: 12pt; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
 
-                    dayUnits.forEach(unit => {
-                      html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 12pt; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
-                    });
-
-                    html += '      </td>\n';
-                    dayOfMonth++;
+                  if (dayTypeLabel) {
+                    html += '        <div style="font-size: 12pt; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
                   }
-                  // Empty cells after last day
-                  else {
-                    html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
-                  }
-                }
+
+                  dayUnits.forEach(unit => {
+                    html += '        <div style="background-color: ' + unit.color + '; color: ' + getReadableTextColor(unit.color) + '; font-size: 12pt; padding: 3px 6px; margin-top: 4px; border-radius: 6px; font-weight: 500;">' + unit.name + '</div>\n';
+                  });
+
+                  html += '      </td>\n';
+                });
 
                 html += '    </tr>\n';
-              }
+              });
 
               html += '  </tbody>\n';
               html += '</table>\n';
             });
 
             return html;
+          };
+
+          const generateCanvasHTML = (classNames) => {
+            // Handle multiple classes or unassigned units
+            const classUnits = Array.isArray(classNames)
+              ? units.filter(u => classNames.includes(u.class))
+              : classNames
+                ? units.filter(u => u.class === classNames)
+                : units.filter(u => !u.class);
+
+            return generateCanvasCalendarHTML(classUnits);
           };
 
           const copyToClipboard = (text) => {
@@ -946,8 +960,8 @@
                         dayTypeLabel && React.createElement('div', { className: "text-xs mt-0.5 opacity-75 truncate" }, dayTypeLabel),
                         mode === 'units' && dayUnits.map((unit, idx) => React.createElement('div', {
                           key: `${unit.id}-${idx}`,
-                          className: "text-xs mt-1 px-1.5 py-0.5 rounded-lg text-white font-medium shadow-sm cursor-pointer hover:opacity-80 transition",
-                          style: { backgroundColor: unit.color, wordBreak: 'break-word', overflowWrap: 'break-word' },
+                          className: "text-xs mt-1 px-1.5 py-0.5 rounded-lg font-medium shadow-sm cursor-pointer hover:opacity-80 transition",
+                          style: { backgroundColor: unit.color, color: getReadableTextColor(unit.color), wordBreak: 'break-word', overflowWrap: 'break-word' },
                           onClick: (e) => {
                             e.stopPropagation();
                             editUnit(unit);
@@ -1214,6 +1228,19 @@
                         className: `w-10 h-10 rounded-lg transition ${unitColor === color ? 'ring-2 ring-offset-2 ring-gray-400' : ''}`,
                         style: { backgroundColor: color }
                       })
+                    ),
+                    React.createElement('label', {
+                      className: `w-10 h-10 rounded-lg transition cursor-pointer flex items-center justify-center border-2 border-dashed border-gray-300 ${!unitColors.includes(unitColor) ? 'ring-2 ring-offset-2 ring-gray-400 border-solid' : ''}`,
+                      style: !unitColors.includes(unitColor) ? { backgroundColor: unitColor, borderColor: unitColor } : {},
+                      title: "Custom color"
+                    },
+                      React.createElement(Plus, { className: `w-4 h-4 ${!unitColors.includes(unitColor) ? 'text-white' : 'text-gray-400'}` }),
+                      React.createElement('input', {
+                        type: "color",
+                        value: unitColors.includes(unitColor) ? '#ffffff' : unitColor,
+                        onChange: (e) => setUnitColor(e.target.value),
+                        className: "sr-only"
+                      })
                     )
                   )
                 ),
@@ -1433,105 +1460,11 @@
                   // Only unassigned units
                   return generateCanvasHTML(null);
                 } else if (includeUnassigned && selectedClassArray.length > 0) {
-                  // Both classes and unassigned - need to combine them in a single calendar
-                  // Create a custom filter that includes both selected classes AND unassigned
+                  // Both classes and unassigned - combine them into a single calendar
                   const allUnits = units.filter(u =>
                     selectedClassArray.includes(u.class) || !u.class
                   );
-
-                  // Temporarily modify the generateCanvasHTML to use our filtered units
-                  // We'll pass a special marker and intercept it
-                  const originalUnits = units;
-
-                  // Generate HTML for the combined view
-                  const monthsHTML = [];
-                  const months = [];
-                  let currentDate = new Date(semesterStart.getFullYear(), semesterStart.getMonth(), 1);
-                  const endDate = new Date(semesterEnd.getFullYear(), semesterEnd.getMonth(), 1);
-
-                  while (currentDate <= endDate) {
-                    months.push(new Date(currentDate));
-                    currentDate.setMonth(currentDate.getMonth() + 1);
-                  }
-
-                  let html = '';
-                  months.forEach(monthDate => {
-                    const { daysInMonth: daysCount, startingDayOfWeek: startDay, year: displayYear, month: displayMonth } = getDaysInMonth(monthDate);
-                    const monthStart = new Date(displayYear, displayMonth, 1);
-                    const monthEnd = new Date(displayYear, displayMonth + 1, 0);
-                    if (monthEnd < semesterStart || monthStart > semesterEnd) return;
-
-                    let firstDayToShow = 1;
-                    let lastDayToShow = daysCount;
-                    let adjustedStartDay = startDay;
-
-                    if (semesterStart.getFullYear() === displayYear && semesterStart.getMonth() === displayMonth) {
-                      firstDayToShow = semesterStart.getDate();
-                      adjustedStartDay = semesterStart.getDay();
-                    }
-                    if (semesterEnd.getFullYear() === displayYear && semesterEnd.getMonth() === displayMonth) {
-                      lastDayToShow = semesterEnd.getDate();
-                    }
-
-                    html += '<h3 style="margin-top: 20px; margin-bottom: 10px; font-size: 12pt; font-weight: bold; color: #c2410c;">';
-                    html += monthNames[displayMonth] + ' ' + displayYear;
-                    html += '</h3>\n';
-                    html += '<table style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">\n';
-                    html += '  <thead>\n    <tr>\n';
-                    ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
-                      html += '      <th style="border: 1px solid #d1d5db; padding: 8px; background-color: #fed7aa; color: #9a3412; font-size: 12pt; text-align: center; width: 14.28%;">' + day + '</th>\n';
-                    });
-                    html += '    </tr>\n  </thead>\n  <tbody>\n';
-
-                    const totalDays = lastDayToShow - firstDayToShow + 1 + adjustedStartDay;
-                    const totalWeeks = Math.ceil(totalDays / 7);
-                    let dayOfMonth = firstDayToShow;
-
-                    for (let week = 0; week < totalWeeks; week++) {
-                      html += '    <tr>\n';
-                      for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-                        if (week === 0 && dayOfWeek < adjustedStartDay) {
-                          html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
-                        } else if (dayOfMonth >= firstDayToShow && dayOfMonth <= lastDayToShow && dayOfMonth <= daysCount) {
-                          const dateStr = formatDate(displayYear, displayMonth, dayOfMonth);
-                          const currentDateObj = new Date(displayYear, displayMonth, dayOfMonth);
-                          const isWeekend = currentDateObj.getDay() % 6 === 0;
-                          const dayType = daySchedule[dateStr];
-                          const dayUnits = allUnits.filter(unit => unit.dates.includes(dateStr));
-
-                          const allTypes = [...instructionalDays, ...nonInstructionalDays];
-                          const dayTypeObj = allTypes.find(d => d.id === dayType);
-                          const dayTypeLabel = dayTypeObj?.label || '';
-
-                          let bgColor = isWeekend ? '#f3f4f6' : '#ffffff';
-                          let textColor = '#000000';
-                          if (!isWeekend && dayTypeObj) {
-                            bgColor = dayTypeObj.color;
-                            textColor = dayTypeObj.textColor;
-                          }
-
-                          html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: ' + bgColor + '; min-height: 80px; vertical-align: top;">\n';
-                          html += '        <div style="font-weight: bold; font-size: 12pt; margin-bottom: 4px; color: ' + textColor + ';">' + dayOfMonth + '</div>\n';
-
-                          if (dayTypeLabel) {
-                            html += '        <div style="font-size: 12pt; color: ' + textColor + '; opacity: 0.8; margin-bottom: 4px;">' + dayTypeLabel + '</div>\n';
-                          }
-
-                          dayUnits.forEach(unit => {
-                            html += '        <div style="background-color: ' + unit.color + '; color: white; font-size: 12pt; padding: 3px 6px; margin-top: 4px; border-radius: 4px; font-weight: 500;">' + unit.name + '</div>\n';
-                          });
-
-                          html += '      </td>\n';
-                          dayOfMonth++;
-                        } else {
-                          html += '      <td style="border: 1px solid #d1d5db; padding: 8px; background-color: #f3f4f6; min-height: 80px; vertical-align: top;"></td>\n';
-                        }
-                      }
-                      html += '    </tr>\n';
-                    }
-                    html += '  </tbody>\n</table>\n';
-                  });
-                  return html;
+                  return generateCanvasCalendarHTML(allUnits);
                 } else {
                   // Only selected classes, no unassigned
                   return generateCanvasHTML(selectedClassArray);
