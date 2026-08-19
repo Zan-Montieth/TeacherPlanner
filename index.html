@@ -17,7 +17,7 @@
         const TeacherPlanner = () => {
           const [currentMonth, setCurrentMonth] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_currentMonth');
-            return saved ? new Date(saved) : new Date(2026, 0, 1);
+            return saved ? new Date(saved) : new Date(2026, 8, 1);
           });
           const [mode, setMode] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_mode');
