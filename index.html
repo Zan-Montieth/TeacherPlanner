@@ -21,7 +21,7 @@
           });
           const [mode, setMode] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_mode');
-            return saved || 'setup';
+            return saved || 'units';
           });
           const [semesterStart, setSemesterStart] = useState(() => {
             const saved = localStorage.getItem('teacherPlanner_semesterStart');
@@ -1331,13 +1331,6 @@
                 },
                   React.createElement('div', { className: "font-semibold text-purple-900" }, "Montieth Geometry Template"),
                   React.createElement('div', { className: "text-xs text-purple-700 mt-1" }, "Complete Geometry schedule with units and planning")
-                ),
-                React.createElement('button', {
-                  onClick: loadMontiethFullTemplate,
-                  className: "w-full px-4 py-3 text-left border-2 border-orange-300 bg-orange-50 rounded-lg hover:bg-orange-100 hover:border-orange-400 transition"
-                },
-                  React.createElement('div', { className: "font-semibold text-orange-900" }, "Montieth Full Schedule (Both Classes)"),
-                  React.createElement('div', { className: "text-xs text-orange-700 mt-1" }, "Complete schedule with both Algebra and Geometry")
                 ),
                 React.createElement('div', { className: "relative" },
                   React.createElement('input', {
